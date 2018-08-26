@@ -36,4 +36,13 @@ client.registry
     })
     .registerCommandsIn(commandDir);
 
+client.on("ready", function() {
+    client.log(`Logged in as ${client.user.username} (ID: ${client.user.id})\n`);
+    client.log("Guilds:");
+
+    for (var guild of client.guilds) {
+        console.log(`${guild.name}: ${guild.memberCount} users`);
+    }
+});
+
 client.login(config.token);
