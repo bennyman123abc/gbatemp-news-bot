@@ -1,2 +1,2 @@
-# gbatemp-news-bot
+# GBAtemp News Bot
 
