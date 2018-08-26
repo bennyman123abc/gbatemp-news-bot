@@ -3,5 +3,5 @@
     "token": "",
     "defaultPrefix": "g!",
     "logCommands": true,
-    "news-rss": "https://gbatemp.net/forums/gbatemp-scene-news.101/index.rss"
+    "feedUrl": "https://gbatemp.net/forums/gbatemp-scene-news.101/index.rss"
 }
