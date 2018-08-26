@@ -1,4 +1,5 @@
 const Commando = require("discord.js-commando");
+const Discord = require("discord.js");
 const fs = require("fs");
 const sqlite = require("sqlite");
 const path = require("path");
@@ -53,8 +54,32 @@ client.on("ready", function() {
 
 rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
     var feed = parser.parseURL(config.feedUrl);
+    var article = feed.items[0]
 
-    // Parse the newest feed item here
+    var title = article.title;
+    var body = h2p(article['content:encoded']).split("\n").splice(1)[0];
+    var img = getHrefs(article['content:encoded'])[0];
+    var author = article.creator;
+    var link = article.link;
+
+    var emb = new Discord.RichEmbed();
+    emb.setAuthor(author, client.user.avatarURL);
+    emb.setColor("GREEN");
+    emb.setThumbnail(img);
+    emb.setFooter("Powered by GBAtemp News Bot");
+    emb.addField(title, body);
+    emb.setURL(link);
+
+    for (var guild of client.guilds) {
+        if (client.provider.get(guild.id, "channel")) {
+            var channel = guild.channels.get(client.provider.get(guild.id, "channel"));
+            var role = guild.roles.get(client.provider.get(guild.id, "role"));
+
+            channel.send(`<@&${role.id}>`, {
+                embed: emb
+            });
+        }
+    }
 })
 
 client.login(config.token);
