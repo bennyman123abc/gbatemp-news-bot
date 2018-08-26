@@ -14,24 +14,29 @@ module.exports = class SetupCommand extends Commando.Command {
     }
 
     async run(message, _) {
-        var msg = await message.reply("setting up the server. Please wait...");
-        var role = await message.guild.createRole({
-            name: "GBAtemp News",
-            color: "GREEN",
-            mentionable: true
-        }, "Setting up the server");
-        var channel = await message.guild.createChannel("gbatemp-news", "text", [{
-            id: message.guild.id,
-            deny: ['SEND_MESSAGES'],
-            allow: ['ADD_REACTIONS']
-        }, {
-            id: role.id,
-            allow: ['SEND_MESSAGES']
-        }], "Setting up the server");
+        try {
+            var msg = await message.reply("setting up the server. Please wait...");
+            var role = await message.guild.createRole({
+                name: "GBAtemp News",
+                color: "GREEN",
+                mentionable: true
+            }, "Setting up the server");
+            var channel = await message.guild.createChannel("gbatemp-news", "text", [{
+                id: message.guild.id,
+                deny: ['SEND_MESSAGES'],
+                allow: ['ADD_REACTIONS']
+            }, {
+                id: this.client.user.id,
+                allow: ['SEND_MESSAGES']
+            }], "Setting up the server");
 
-        this.client.provider.set(message.guild.id, "role", role.id);
-        this.client.provider.set(message.guild.id, "channel", channel.id);
+            this.client.provider.set(message.guild.id, "role", role.id);
+            this.client.provider.set(message.guild.id, "channel", channel.id);
 
-        msg.edit("Finished setting up the server!");
+            msg.edit("Finished setting up the server!");
+        }
+        catch(e) {
+            console.error(e);
+        }
     }
 }
