@@ -2,6 +2,10 @@ const Commando = require("discord.js-commando");
 const fs = require("fs");
 const sqlite = require("sqlite");
 const path = require("path");
+const Watcher = require("rss-watcher");
+const Parser = require("rss-parser");
+const getHrefs = require("get-hrefs");
+const h2p = require("html2plaintext");
 
 const configFile = path.join(__dirname, "config.json");
 const defaultConfig = path.join(__dirname, "config.default.json");
@@ -23,6 +27,8 @@ const client = new Commando.CommandoClient({
     commandPrefix: config.defaultPrefix,
     disableEveryone: true
 });
+const rss = new Watcher(config.feedUrl);
+const parser = new Parser();
 
 client.setProvider(
     sqlite.open(dbFile).then(db => new Commando.SQLiteProvider(db))
@@ -44,5 +50,11 @@ client.on("ready", function() {
         console.log(`${guild.name}: ${guild.memberCount} users`);
     }
 });
+
+rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
+    var feed = parser.parseURL(config.feedUrl);
+
+    // Parse the newest feed item here
+})
 
 client.login(config.token);
