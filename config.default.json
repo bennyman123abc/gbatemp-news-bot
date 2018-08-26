@@ -1,5 +1,6 @@
 {
-    "owner": "",
+    "owners": [""],
     "token": "",
+    "defaultPrefix": "g!",
     "news-rss": "https://gbatemp.net/forums/gbatemp-scene-news.101/index.rss"
 }
