@@ -6,6 +6,7 @@ const path = require("path");
 const configFile = path.join(__dirname, "config.json");
 const defaultConfig = path.join(__dirname, "config.default.json");
 const dbFile = path.join(__dirname, "db.sqlite");
+const commandDir = path.join(__dirname, "commands");
 
 if (!fs.existsSync(configFile)) {
     fs.copyFileSync(defaultConfig, configFile);
@@ -17,12 +18,22 @@ if (!fs.existsSync(configFile)) {
 }
 
 const config = fs.readFileSync(configFile);
-const Client = new Commando.Client({
-    owner: config.owner
+const client = new Commando.CommandoClient({
+    owner: config.owners,
+    commandPrefix: config.defaultPrefix,
+    disableEveryone: true
 });
 
 client.setProvider(
     sqlite.open(dbFile).then(db => new Commando.SQLiteProvider(db))
 ).catch(console.error);
+
+client.registry
+    .registerDefaultTypes()
+    .registerDefaultGroups()
+    .registerDefaultCommands({
+        eval: false
+    })
+    .registerCommandsIn(commandDir);
 
 client.login(config.token);
