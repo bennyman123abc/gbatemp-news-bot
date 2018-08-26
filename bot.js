@@ -50,6 +50,13 @@ client.on("ready", function() {
     for (var guild of client.guilds) {
         console.log(`${guild.name}: ${guild.memberCount} users`);
     }
+
+    client.user.setPresence({
+        status: "online",
+        game: {
+            name: `Serving news to ${client.guilds.size} guild(s)`
+        }
+    });
 });
 
 rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
