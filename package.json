@@ -1,0 +1,23 @@
+{
+  "name": "gbatemp-news-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bot.js",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennyman123abc/gbatemp-news-bot.git"
+  },
+  "author": "bennyman123abc",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/bennyman123abc/gbatemp-news-bot/issues"
+  },
+  "homepage": "https://github.com/bennyman123abc/gbatemp-news-bot#readme",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "discord.js-commando": "^0.10.0"
+  }
+}
