@@ -1,0 +1,2 @@
+# GBAtemp News Bot
+
