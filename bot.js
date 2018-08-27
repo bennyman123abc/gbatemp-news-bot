@@ -16,7 +16,7 @@ const commandDir = path.join(__dirname, "commands");
 if (!fs.existsSync(configFile)) {
     fs.copyFileSync(defaultConfig, configFile);
     console.log(`A config has been generated for you from the default settings.
-                 
+
 Please edit the settings in your new "config.json" and then
 re-run the bot.`);
     process.exit();
@@ -91,6 +91,10 @@ rss.on("new article", async function(_) { /* The _ has to stay because I'm not u
             });
         }
     }
+});
+
+rss.run(function(err, _) {
+    console.error(err);
 })
 
 client.login(config.token);
