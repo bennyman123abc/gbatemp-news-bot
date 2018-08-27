@@ -1,0 +1,19 @@
+{
+  "name": "node-event-timer",
+  "version": "1.0.0",
+  "description": "Emits events periodically",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennyman123abc/node-event-timer.git"
+  },
+  "author": "bennyman123abc",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/bennyman123abc/node-event-timer/issues"
+  },
+  "homepage": "https://github.com/bennyman123abc/node-event-timer#readme"
+}
