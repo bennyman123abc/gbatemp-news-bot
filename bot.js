@@ -22,14 +22,15 @@ re-run the bot.`);
     process.exit();
 }
 
-const config = JSON.parse(fs.readFileSync(configFile));
+const config = JSON.parse(fs.readFileSync(configFile)); /* The configuration file. */
+
 const client = new Commando.CommandoClient({
     owner: config.owners,
     commandPrefix: config.defaultPrefix,
     disableEveryone: true
 });
-const rss = new Watcher(config.feedUrl);
-const parser = new Parser();
+
+const rss = new Watcher(config.feedUrl), parser = new Parser(); /* Initalize the watcher and the parser. */
 
 client.setProvider(
     sqlite.open(dbFile).then(db => new Commando.SQLiteProvider(db))
@@ -43,45 +44,34 @@ client.registry
     })
     .registerCommandsIn(commandDir);
 
-client.on("ready", function() {
-    console.log(`Logged in as ${client.user.username} (ID: ${client.user.id})\n`);
-    console.log("Guilds:");
+// Fired when the client is ready.
+client.on("ready", () => {
+    console.log(`Logged in as ${client.user.tag} (ID: ${client.user.id})\n`); /* Display that logging in was successful. */
+    console.log(`Guilds: ${client.guilds.array().join(",\n")}`);
 
-    // for (var guild of client.guilds) {
-    //     console.log(`${guild.name}`);
-    // }
-
-    client.guilds.forEach(function(guild) {
-        console.log(guild.name);
-    });
-
-    client.user.setPresence({
-        status: "online",
-        game: {
-            name: `Serving news to ${client.guilds.size} guild(s)`
-        }
-    });
+    client.user /* Update the presence. */
+        .setPresence({
+            status: "online",
+            game: {
+                name: `Serving news to ${client.guilds.size} guild(s)`
+            }
+        });
 });
 
-rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
-    console.log("New article")
-    var feed = parser.parseURL(config.feedUrl);
-    var article = feed.items[0];
+rss.on("new article", async (_) => { /* The _ has to stay because I'm not using the argument provided */
+    console.log("New article") /* A new article was recieved. */
+    var feed = parser.parseURL(config.feedUrl); /* Parse the URL.  */
+    var article = feed.items[0]; /* Obtain the article. */
 
-    var title = article.title;
-    var body = h2p(article['content:encoded']).split("\n").splice(1)[0];
-    var img = getHrefs(article['content:encoded'])[0];
-    var author = article.creator;
-    var link = article.link;
+    var title = article.title, body = h2p(article['content:encoded']).split("\n").splice(1)[0], img = getHrefs(article['content:encoded'])[0], author = article.creator, link = article.link, emb = new Discord.RichEmbed();
+    
+    emb.setAuthor("Post by " + author, client.user.avatarURL)
+        .setColor("GREEN")
+        .setThumbnail(img)
+        .addField(title, body)
+        .addField("Original post:", link);
 
-    var emb = new Discord.RichEmbed();
-    emb.setAuthor("Post by " + author, client.user.avatarURL);
-    emb.setColor("GREEN");
-    emb.setThumbnail(img);
-    emb.addField(title, body);
-    emb.addField("Original post:", link)
-
-    for (var guild of client.guilds) {
+    client.guilds.forEach((guild) => {
         if (client.provider.get(guild.id, "channel")) {
             var channel = guild.channels.get(client.provider.get(guild.id, "channel"));
             var role = guild.roles.get(client.provider.get(guild.id, "role"));
