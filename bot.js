@@ -65,7 +65,7 @@ client.on("ready", function() {
 
 rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
     console.log("New article")
-    var feed = parser.parseURL(config.feedUrl);
+    var feed = await parser.parseURL(config.feedUrl);
     var article = feed.items[0];
 
     var title = article.title;
