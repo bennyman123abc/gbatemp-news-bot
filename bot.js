@@ -45,15 +45,11 @@ client.registry
 
 client.on("ready", function() {
     console.log(`Logged in as ${client.user.username} (ID: ${client.user.id})\n`);
-    console.log("Guilds:");
+    // console.log(`Guilds:`);
 
     // for (var guild of client.guilds) {
     //     console.log(`${guild.name}`);
     // }
-
-    client.guilds.forEach(function(guild) {
-        console.log(guild.name);
-    });
 
     client.user.setPresence({
         status: "online",
@@ -61,10 +57,33 @@ client.on("ready", function() {
             name: `Serving news to ${client.guilds.size} guild(s)`
         }
     });
+
+    checkRSS();
+
+    setInterval(function() {
+        checkRSS();
+    }, 1000 * 10 /* 10 seconds */)
 });
 
-rss.on("new article", async function(_) { /* The _ has to stay because I'm not using the argument provided */
-    console.log("New article")
+async function checkRSS() {
+    var feed = await parser.parseURL(config.feedUrl);
+    var article = feed.items[0];
+
+    var title = article.title;
+
+    if (title == config.lastTitle) {
+        console.log("No new articles");
+    }
+
+    else {
+        console.log("New article")
+        postArticle();
+        config.lastTitle = title;
+        fs.writeFileSync(configFile, JSON.stringify(config, null, 4));
+    }
+}
+
+async function postArticle() {
     var feed = await parser.parseURL(config.feedUrl);
     var article = feed.items[0];
 
@@ -81,7 +100,7 @@ rss.on("new article", async function(_) { /* The _ has to stay because I'm not u
     emb.addField(title, body);
     emb.addField("Original post:", link)
 
-    for (var guild of client.guilds) {
+    client.guilds.forEach(function(guild) {
         if (client.provider.get(guild.id, "channel")) {
             var channel = guild.channels.get(client.provider.get(guild.id, "channel"));
             var role = guild.roles.get(client.provider.get(guild.id, "role"));
@@ -90,11 +109,13 @@ rss.on("new article", async function(_) { /* The _ has to stay because I'm not u
                 embed: emb
             });
         }
-    }
-});
+    });
+};
 
 rss.run(function(err, _) {
-    console.error(err);
+    if (err) {
+        console.error(err);
+    }
 })
 
 client.login(config.token);
