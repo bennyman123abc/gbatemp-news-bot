@@ -67,6 +67,7 @@ client.on("ready", function() {
     setInterval(function() {
         checkRSS();
         if (guildCountCache != client.guilds.size) {
+            guildCountCache = client.guilds.size;
             client.user.setPresence({
                 status: "online",
                 game: {
