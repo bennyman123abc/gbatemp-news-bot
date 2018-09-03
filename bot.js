@@ -13,6 +13,8 @@ const defaultConfig = path.join(__dirname, "config.default.json");
 const dbFile = path.join(__dirname, "db.sqlite");
 const commandDir = path.join(__dirname, "commands");
 
+var guildCountCache;
+
 if (!fs.existsSync(configFile)) {
     fs.copyFileSync(defaultConfig, configFile);
     console.log(`A config has been generated for you from the default settings.
@@ -51,6 +53,8 @@ client.on("ready", function() {
     //     console.log(`${guild.name}`);
     // }
 
+    guildCountCache = client.guilds.size;
+
     client.user.setPresence({
         status: "online",
         game: {
@@ -62,6 +66,15 @@ client.on("ready", function() {
 
     setInterval(function() {
         checkRSS();
+        if (guildCountCache != client.guilds.size) {
+            client.user.setPresence({
+                status: "online",
+                game: {
+                    name: `Serving news to ${guildCountCache} guild(s)`
+                }
+            });
+        }
+
     }, 1000 * 10 /* 10 seconds */)
 });
 
