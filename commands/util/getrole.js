@@ -13,8 +13,9 @@ module.exports = class GetRoleCommand extends Commando.Command {
     }
 
     async run(message, _) {
+        var msg;
         try {
-            var msg = await message.reply("Giving you the role...");
+            msg = await message.reply("Giving you the role...");
             var member = await message.guild.fetchMember(message.author);
 
             member.addRole(this.client.provider.get(message.guild, "role"));
@@ -22,6 +23,9 @@ module.exports = class GetRoleCommand extends Commando.Command {
         }
         catch(e) {
             console.error(e);
+            msg.edit(`An error has occurred while running this command.\n
+\`${e}\`\n
+You shouldn't get this error. Please contact **bennyman123abc#1417** to resolve the issue.`);
         }
     }
 }
