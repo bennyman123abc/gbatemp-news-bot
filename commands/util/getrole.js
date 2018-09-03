@@ -17,7 +17,7 @@ module.exports = class GetRoleCommand extends Commando.Command {
             var msg = await message.reply("Giving you the role...");
             var member = await message.guild.fetchMember(message.author);
 
-            member.addRole(this.client.provider.get("role"));
+            member.addRole(this.client.provider.get(message.guild, "role"));
             msg.edit(`You now have the role, <@${message.author.id}>!`);
         }
         catch(e) {
