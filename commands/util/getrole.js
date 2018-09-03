@@ -5,7 +5,7 @@ module.exports = class GetRoleCommand extends Commando.Command {
         super(client, {
             name: "getrole",
             group: "util",
-            memberName: "setup",
+            memberName: "getrole",
             description: "Gives you the guild's notification role.",
             guildOnly: true,
             clientPermissions: ["MANAGE_ROLES"]
@@ -14,7 +14,11 @@ module.exports = class GetRoleCommand extends Commando.Command {
 
     async run(message, _) {
         try {
-            
+            var msg = await message.reply("Giving you the role...");
+            var member = await message.guild.fetchMember(message.author);
+
+            member.addRole(this.client.provider.get("role"));
+            msg.edit(`You now have the role, <@${message.author.id}>!`);
         }
         catch(e) {
             console.error(e);
